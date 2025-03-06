@@ -5,48 +5,47 @@ import TaskList from "./components/TaskList";
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      tasks: [],
+      tasks: JSON.parse(localStorage.getItem("tasks")) || []
     };
   }
 
   componentDidMount() {
-    const savedTasks = localStorage.getItem("tasks");
-    if (savedTasks) {
-      this.setState({ tasks: JSON.parse(savedTasks) });
-    }
-  }
-
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.tasks !== this.state.tasks) {
+    // Solution de secours pour les anciens navigateurs
+    if (!localStorage.getItem("tasks")) {
       localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
     }
   }
 
+ 
+  componentDidUpdate(prevProps, prevState) {
   
+    if (JSON.stringify(prevState.tasks) !== JSON.stringify(this.state.tasks)) {
+      localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
+    }
+  }
   componentWillUnmount() {
-    console.log("Sauvegarde des tâches avant démontage !");
     localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
   }
-
-  
   addTask = (task) => {
-    this.setState({ tasks: [...this.state.tasks, task] });
+    this.setState(prevState => ({
+      tasks: [...prevState.tasks, { ...task, id: Date.now() }]
+    }));
   };
 
- 
   deleteTask = (id) => {
-    this.setState({ tasks: this.state.tasks.filter((task) => task.id !== id) });
+    this.setState(prevState => ({
+      tasks: prevState.tasks.filter(task => task.id !== id)
+    }));
   };
 
-  
-  toggleComplete = (id) => {  
-    this.setState({
-      tasks: this.state.tasks.map((task) =>
+  toggleComplete = (id) => {
+    this.setState(prevState => ({
+      tasks: prevState.tasks.map(task => 
         task.id === id ? { ...task, completed: !task.completed } : task
-      ),
-    });
+      )
+    }));
   };
 
   render() {
@@ -57,7 +56,7 @@ class App extends Component {
         <TaskList
           tasks={this.state.tasks}
           deleteTask={this.deleteTask}
-          toggleComplete={this.toggleComplete}  
+          toggleComplete={this.toggleComplete}
         />
       </div>
     );
