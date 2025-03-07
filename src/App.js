@@ -5,46 +5,40 @@ import TaskList from "./components/TaskList";
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      tasks: JSON.parse(localStorage.getItem("tasks")) || []
+      tasks: JSON.parse(localStorage.getItem("tasks")) || [],
     };
   }
 
   componentDidMount() {
-    // Solution de secours pour les anciens navigateurs
     if (!localStorage.getItem("tasks")) {
       localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
     }
   }
 
- 
   componentDidUpdate(prevProps, prevState) {
-  
     if (JSON.stringify(prevState.tasks) !== JSON.stringify(this.state.tasks)) {
       localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
     }
   }
-  componentWillUnmount() {
-    localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
-  }
+
   addTask = (task) => {
-    this.setState(prevState => ({
-      tasks: [...prevState.tasks, { ...task, id: Date.now() }]
+    this.setState((prevState) => ({
+      tasks: [...prevState.tasks, { ...task, id: Date.now() }],
     }));
   };
 
   deleteTask = (id) => {
-    this.setState(prevState => ({
-      tasks: prevState.tasks.filter(task => task.id !== id)
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.filter((task) => task.id !== id),
     }));
   };
 
   toggleComplete = (id) => {
-    this.setState(prevState => ({
-      tasks: prevState.tasks.map(task => 
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
-      )
+      ),
     }));
   };
 
