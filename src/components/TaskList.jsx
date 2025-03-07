@@ -3,11 +3,11 @@ import TaskItem from "./TaskItem";
 
 class TaskList extends Component {
   render() {
-    const { tasks, deleteTask, toggleComplete } = this.props;  
+    const { tasks, deleteTask, toggleComplete } = this.props;
 
     return (
       <div className="mt-4 p-4 bg-white shadow-md rounded-lg">
-        {tasks && tasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <p className="text-gray-500 text-center">Aucune tâche disponible</p>
         ) : (
           tasks.map((task) => (
@@ -15,7 +15,7 @@ class TaskList extends Component {
               key={task.id}
               task={task}
               deleteTask={deleteTask}
-              toggleComplete={toggleComplete}  
+              toggleComplete={toggleComplete}
             />
           ))
         )}
